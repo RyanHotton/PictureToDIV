@@ -1,9 +1,6 @@
 <?php
-	//$image = new Imagick('pictures/batman_icon.jpg');
-	//$image = new Imagick('pictures/marvel_icon.png');
+	// get image
 	$image = new Imagick($_POST['picURL']);
-	
-
 	$d = $image->getImageGeometry(); 
 	$w = $d['width']; 
 	$h = $d['height'];
@@ -11,7 +8,7 @@
 <!DOCTYPE html>
 <html>
 	<head>
-		<meta charset="UTF-8">
+		<meta charset="UTF-8" />
 		<title>Picture to Div</title>
 		<style>
 			div.pic {
@@ -45,11 +42,10 @@
 		<hr />
 		
 			<?php
+				// echo each individual pixel of the image as a div tag
 				echo "<div class=\"pic\" style=\"width: {$w}px; height: {$h}px;\">";
-				for ($y = 1; $y <= $h; $y++)
-				{
-					for ($x = 1; $x <= $w; $x++)
-					{
+				for ($y = 1; $y <= $h; $y++) {
+					for ($x = 1; $x <= $w; $x++) {
 						$pixel = $image->getImagePixelColor($x, $y);
 						$color = $pixel->getColor(); 
 						echo "<div class=\"pixel\" style=\"background-color: rgb({$color[r]},{$color[g]},{$color[b]});\"></div>";
