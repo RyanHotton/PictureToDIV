@@ -12,7 +12,8 @@
 		<title>Picture to Div</title>
 		<style>
 			div.pic {
-				border-style: solid;
+			    border-style: solid;
+			    background-color: grey;
 			}
 			div.pixel {
 				width: 1px;
@@ -48,7 +49,7 @@
 					for ($x = 1; $x <= $w; $x++) {
 						$pixel = $image->getImagePixelColor($x, $y);
 						$color = $pixel->getColor(); 
-						echo "<div class=\"pixel\" style=\"background-color: rgb({$color[r]},{$color[g]},{$color[b]});\"></div>";
+						echo "<div class=\"pixel\" style=\"background-color: rgba({$color[r]},{$color[g]},{$color[b]},{$color[a]});\"></div>";
 					}
 				}
 				echo "</div>";
