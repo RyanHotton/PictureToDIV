@@ -10,20 +10,8 @@
 	<head>
 		<meta charset="UTF-8" />
 		<title>Picture to Div</title>
-		<style>
-			div.pic {
-			    border-style: solid;
-			    background-color: grey;
-			}
-			div.pixel {
-				width: 1px;
-				height: 1px;
-				float:left;
-			}
-			input#picURL {
-				width: 100%;
-			}
-		</style>
+		<!-- External Stylesheet -->
+		<link rel="stylesheet" type="text/css" href="CSS/pic2div.css" />
 	</head>
 	<body>
 		<h1>Picture to Div</h1>
@@ -41,7 +29,6 @@
 			<li>Height: <?=$h?>px</li>
 		</ul>
 		<hr />
-		
 			<?php
 				// echo each individual pixel of the image as a div tag
 				echo "<div class=\"pic\" style=\"width: {$w}px; height: {$h}px;\">";
