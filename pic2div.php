@@ -19,7 +19,8 @@
 	var_dump($sth);
 	// execute
 	$sth->execute($params);
-	
+	$id = $database->lastId();
+	var_dump($id);
 ?>
 <!DOCTYPE html>
 <html>
@@ -52,11 +53,18 @@
 				// echo each individual pixel of the image as a div tag
 				echo "<div class=\"pic\" style=\"width: {$w}px; height: {$h}px;\">";
 				for ($y = 1; $y <= $h; $y++) {
+					$row_string = "";
 					for ($x = 1; $x <= $w; $x++) {
 						$pixel = $image->getImagePixelColor($x, $y);
 						$color = $pixel->getColor(); 
 						echo "<div class=\"pixel\" style=\"background-color: rgba({$color['r']},{$color['g']},{$color['b']},{$color['a']});\"></div>";
+						$row_string .= "<div class=\"pixel\" style=\"background-color: rgba({$color['r']},{$color['g']},{$color['b']},{$color['a']});\"></div>";
 					}
+					// inserts row html into database
+					$query2 = "INSERT INTO `db_pictures`.`pic_rows` (`position`, `data`, `pic_id`) VALUES (:pos, :row, :picId)";
+					$params2 = array(':pos' => $y, ':row' => $row_string, ':picId' => $id);
+					$sth2 = $database->prepareSQL($query2);
+					$sth2->execute($params2);
 				}
 				echo "</div>";
 			?>
