@@ -1,11 +1,13 @@
 <?php
+	// get Database class
+	include_once "Class/Credentials.class.php";
 	// redirects if no POST
 	if (!isset($_POST['picURL'])) {
 		header("Location: index.html");
 	}
-	// get Database class
-	include_once "Class/Credentials.class.php";
+	// database class
 	$database = new Credentials;
+	// connect to database
 	$database->connectDB();
 	// get image
 	$image = new Imagick($_POST['picURL']);
@@ -16,11 +18,13 @@
 	$query = "INSERT INTO `db_pictures`.`pixels` (`name`, `source`, `height`, `width`, `status`) VALUES (:name, :url, :height, :width, :status);";
 	$params = array(':name' => $_POST['picName'], ':url' => $_POST['picURL'], ':height' => $h, ':width' => $w, ':status' => 1);
 	$sth = $database->prepareSQL($query);
-	var_dump($sth);
+	if ($sth == false) {
+		header("Location: index.html"); // query failed
+	}
 	// execute
 	$sth->execute($params);
+	// get image id
 	$id = $database->lastId();
-	var_dump($id);
 ?>
 <!DOCTYPE html>
 <html>
@@ -43,6 +47,7 @@
 		</form>
 		<h4>Picture Details:</h4>
 		<ul>
+			<li><strong>ID: </strong> #<?=$id?></li>
 			<li><strong>Name:</strong> <?=$_POST['picName']?></li>
 			<li><strong>Picture URL:</strong> <?php echo "<a href=\"{$_POST['picURL']}\">{$_POST['picURL']}</a>" ?></li>
 			<li><strong>Width:</strong> <?=$w?>px</li>
@@ -65,6 +70,11 @@
 					$params2 = array(':pos' => $y, ':row' => $row_string, ':picId' => $id);
 					$sth2 = $database->prepareSQL($query2);
 					$sth2->execute($params2);
+					// update position`
+					$query3 = "UPDATE `db_pictures`.`pixels` SET `status` = :status WHERE `pixels`.`id` = :id;";
+					$params3 = array(':status' => $y, ':id' => $id);
+					$sth3 = $database->prepareSQL($query3);
+					$sth3->execute($params3);
 				}
 				echo "</div>";
 			?>
