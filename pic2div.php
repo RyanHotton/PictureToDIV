@@ -1,9 +1,25 @@
 <?php
+	// redirects if no POST
+	if (!isset($_POST['picURL'])) {
+		header("Location: index.html");
+	}
+	// get Database class
+	include_once "Class/Credentials.class.php";
+	$database = new Credentials;
+	$database->connectDB();
 	// get image
 	$image = new Imagick($_POST['picURL']);
 	$d = $image->getImageGeometry(); 
 	$w = $d['width']; 
 	$h = $d['height'];
+	// test db insert
+	$query = "INSERT INTO `db_pictures`.`pixels` (`name`, `source`, `height`, `width`, `status`) VALUES (:name, :url, :height, :width, :status);";
+	$params = array(':name' => $_POST['picName'], ':url' => $_POST['picURL'], ':height' => $h, ':width' => $w, ':status' => 1);
+	$sth = $database->prepareSQL($query);
+	var_dump($sth);
+	// execute
+	$sth->execute($params);
+	
 ?>
 <!DOCTYPE html>
 <html>
@@ -16,17 +32,20 @@
 	<body>
 		<h1>Picture to Div</h1>
 		<form action="pic2div.php" method="POST">
+			<label for="picName">Picture Name: </label><br />
+			<input type="text" id="picName" name="picName" value="Picture"/>
+			<br />
 			<label for="picURL">Picture URL: </label>
-			<?php
-				echo "<input type=\"text\" id=\"picURL\" name=\"picURL\" value=\"{$_POST['picURL']}\"/>";
-			?>
+			<input type="text" id="picURL" name="picURL"/>
 			<br />
 			<input type="submit"/>
 		</form>
 		<h4>Picture Details:</h4>
 		<ul>
-			<li>Width: <?=$w?>px</li>
-			<li>Height: <?=$h?>px</li>
+			<li><strong>Name:</strong> <?=$_POST['picName']?></li>
+			<li><strong>Picture URL:</strong> <?php echo "<a href=\"{$_POST['picURL']}\">{$_POST['picURL']}</a>" ?></li>
+			<li><strong>Width:</strong> <?=$w?>px</li>
+			<li><strong>Height:</strong> <?=$h?>px</li>
 		</ul>
 		<hr />
 			<?php
@@ -36,10 +55,13 @@
 					for ($x = 1; $x <= $w; $x++) {
 						$pixel = $image->getImagePixelColor($x, $y);
 						$color = $pixel->getColor(); 
-						echo "<div class=\"pixel\" style=\"background-color: rgba({$color[r]},{$color[g]},{$color[b]},{$color[a]});\"></div>";
+						echo "<div class=\"pixel\" style=\"background-color: rgba({$color['r']},{$color['g']},{$color['b']},{$color['a']});\"></div>";
 					}
 				}
 				echo "</div>";
 			?>
 	</body>
 </html>
+<?php
+	$database->closeDB();
+?>
