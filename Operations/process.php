@@ -25,9 +25,10 @@
 		$h = $d['height'];
 		// id
 		$id = $result["id"];
-		for ($y = $result["status"]+1; $y <= $result["status"]+50; $y++) {
-			if ($result["status"]+50 > $h)
-			{
+		$add = 75;
+		for ($y = $result["status"]+1; $y <= $result["status"]+$add; $y++) {
+			if ($y > $h) {
+				echo "Breaking Loop";
 				break;
 			}
 			else {

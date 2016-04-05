@@ -1,0 +1,12 @@
+div.pic {
+    border-style: solid;
+    background-color: #D3D3D3;
+}
+div.pixel {
+	width: 1px;
+	height: 1px;
+	float:left;
+}
+input#picURL {
+	width: 100%;
+}
